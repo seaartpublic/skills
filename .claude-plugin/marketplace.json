@@ -11,10 +11,10 @@
       "description": "Prompt-building, GPT Image workflow, preflight advice, and storyboard planning skills for SeaArt creative workflows.",
       "version": "0.1.0",
       "skills": [
-        "generation-prompt-builder",
-        "gpt-image-assistant",
-        "prompt-preflight-advice",
-        "storyboard-prompt-assistant"
+        "./generation-prompt-builder",
+        "./gpt-image-assistant",
+        "./prompt-preflight-advice",
+        "./storyboard-prompt-assistant"
       ]
     }
   ]
