@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+# seaart-skills setup — first-time installation for Claude Code, Cursor, Codex, etc.
+# Idempotent: safe to run multiple times.
+set -euo pipefail
+
+# ─── Colors (degrade gracefully) ─────────────────────────────
+if [ -t 1 ] && command -v tput &>/dev/null && [ "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]; then
+  GREEN=$(tput setaf 2) YELLOW=$(tput setaf 3) RED=$(tput setaf 1) BOLD=$(tput bold) RESET=$(tput sgr0)
+else
+  GREEN="" YELLOW="" RED="" BOLD="" RESET=""
+fi
+
+ok()   { printf "%s✓%s %s\n" "$GREEN" "$RESET" "$1"; }
+warn() { printf "%s!%s %s\n" "$YELLOW" "$RESET" "$1"; }
+err()  { printf "%s✗%s %s\n" "$RED" "$RESET" "$1"; }
+info() { printf "%s→%s %s\n" "$BOLD" "$RESET" "$1"; }
+
+# ─── Locate repo root ────────────────────────────────────────
+SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
+SKILLS=(generation-prompt-builder gpt-image-assistant prompt-preflight-advice storyboard-prompt-assistant)
+
+missing_sources=0
+for skill in "${SKILLS[@]}"; do
+  if [ ! -f "$SKILL_DIR/$skill/SKILL.md" ]; then
+    err "Source missing: $SKILL_DIR/$skill/SKILL.md"
+    missing_sources=1
+  fi
+done
+
+if [ "$missing_sources" -ne 0 ]; then
+  err "Cannot install because one or more skill sources are missing. Run this script from the SeaArt skills repo root."
+  exit 1
+fi
+
+echo
+echo "${BOLD}SeaArt Skills setup${RESET}"
+echo
+
+# ─── Parse flags ────────────────────────────────────────────
+HOST_OVERRIDE=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --host)
+      shift
+      [ $# -eq 0 ] && { err "--host requires a value: claude | cursor | codex"; exit 1; }
+      HOST_OVERRIDE="$1"
+      shift
+      ;;
+    --host=*)
+      HOST_OVERRIDE="${1#--host=}"
+      shift
+      ;;
+    --help|-h)
+      cat <<EOF
+Usage: ./setup [options]
+
+Options:
+  --host <agent>   Force install path for: claude, cursor, codex
+                   (auto-detected if omitted)
+  --help           Show this message
+
+Idempotent: safe to run multiple times.
+EOF
+      exit 0
+      ;;
+    *)
+      warn "Unknown flag: $1"
+      shift
+      ;;
+  esac
+done
+
+# ─── Detect agent host ──────────────────────────────────────
+detect_host() {
+  if [ -n "$HOST_OVERRIDE" ]; then
+    echo "$HOST_OVERRIDE"
+    return
+  fi
+  if [ -d "$HOME/.claude" ]; then echo "claude"; return; fi
+  if [ -d "$HOME/.cursor" ]; then echo "cursor"; return; fi
+  if [ -d "$HOME/.codex" ]; then echo "codex"; return; fi
+  echo "unknown"
+}
+
+HOST="$(detect_host)"
+case "$HOST" in
+  claude) TARGET_DIR="$HOME/.claude/skills" ;;
+  cursor) TARGET_DIR="$HOME/.cursor/plugins" ;;
+  codex)  TARGET_DIR="$HOME/.codex/plugins" ;;
+  unknown)
+    warn "Could not auto-detect agent host."
+    info "Re-run with --host <claude|cursor|codex>, or symlink the skills manually into your agent's skills directory."
+    exit 1
+    ;;
+  *)
+    err "Unknown host: $HOST"
+    info "Supported hosts: claude, cursor, codex"
+    exit 1
+    ;;
+esac
+
+ok "Detected host: $HOST"
+ok "Target install path: $TARGET_DIR/<skill-name>"
+echo
+
+# ─── Install skills ─────────────────────────────────────────
+mkdir -p "$TARGET_DIR"
+for skill in "${SKILLS[@]}"; do
+  src="$SKILL_DIR/$skill"
+  dst="$TARGET_DIR/$skill"
+  if [ -L "$dst" ]; then
+    if [ "$(readlink "$dst")" = "$src" ]; then
+      ok "$skill already symlinked"
+    else
+      info "$skill: replacing stale symlink"
+      rm "$dst"
+      ln -s "$src" "$dst"
+      ok "$skill symlinked"
+    fi
+  elif [ -e "$dst" ]; then
+    warn "$dst exists but is not a symlink to $src — leaving alone."
+  else
+    ln -s "$src" "$dst"
+    ok "$skill symlinked"
+  fi
+done
+echo
+
+# ─── Verify ─────────────────────────────────────────────────
+info "Verifying install…"
+fail=0
+for skill in "${SKILLS[@]}"; do
+  if [ -f "$TARGET_DIR/$skill/SKILL.md" ]; then
+    ok "$skill present"
+  else
+    err "$skill missing at $TARGET_DIR/$skill/SKILL.md"
+    fail=1
+  fi
+done
+echo
+
+if [ "$fail" -eq 0 ]; then
+  cat <<EOF
+${GREEN}${BOLD}Done.${RESET}
+
+Try one of these in your agent:
+
+  "Improve this product image prompt for SeaArt."
+  "Prepare a GPT Image edit prompt for this reference."
+  "Give preflight advice before I generate this image."
+  "Turn this ad concept into a storyboard prompt table."
+
+Documentation:
+  README.md              — overview and skills table
+  INSTALL.md             — installation options
+  INSTALL_FOR_AGENTS.md  — agent-driven install steps
+
+EOF
+else
+  err "Setup completed with errors. Review the messages above."
+  exit 1
+fi
