@@ -1,22 +1,37 @@
 {
   "name": "seaart",
-  "version": "0.1.0",
-  "description": "SeaArt skills for prompt generation, GPT Image workflows, preflight creative advice, and storyboard prompt planning.",
-  "author": {
+  "owner": {
     "name": "SeaArt",
     "url": "https://www.seaart.ai"
   },
-  "homepage": "https://www.seaart.ai",
-  "repository": "https://github.com/seaartpublic/skills",
-  "license": "MIT",
-  "keywords": [
-    "seaart",
-    "prompt",
-    "image-generation",
-    "video-prompt",
-    "storyboard",
-    "gpt-image",
-    "ai-content",
-    "creative-workflow"
+  "plugins": [
+    {
+      "name": "seaart",
+      "source": "./",
+      "description": "Prompt-building, GPT Image workflow, preflight advice, and storyboard planning skills for SeaArt creative workflows.",
+      "version": "0.1.0",
+      "skills": [
+        {
+          "name": "generation-prompt-builder",
+          "path": "generation-prompt-builder",
+          "invoke": "/seaart:generation-prompt-builder"
+        },
+        {
+          "name": "gpt-image-assistant",
+          "path": "gpt-image-assistant",
+          "invoke": "/seaart:gpt-image-assistant"
+        },
+        {
+          "name": "prompt-preflight-advice",
+          "path": "prompt-preflight-advice",
+          "invoke": "/seaart:prompt-preflight-advice"
+        },
+        {
+          "name": "storyboard-prompt-assistant",
+          "path": "storyboard-prompt-assistant",
+          "invoke": "/seaart:storyboard-prompt-assistant"
+        }
+      ]
+    }
   ]
 }
