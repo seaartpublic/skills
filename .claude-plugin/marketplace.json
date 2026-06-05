@@ -1,0 +1,22 @@
+{
+  "name": "seaart",
+  "version": "0.1.0",
+  "description": "SeaArt skills for prompt generation, GPT Image workflows, preflight creative advice, and storyboard prompt planning.",
+  "author": {
+    "name": "SeaArt",
+    "url": "https://www.seaart.ai"
+  },
+  "homepage": "https://www.seaart.ai",
+  "repository": "https://github.com/seaartpublic/skills",
+  "license": "MIT",
+  "keywords": [
+    "seaart",
+    "prompt",
+    "image-generation",
+    "video-prompt",
+    "storyboard",
+    "gpt-image",
+    "ai-content",
+    "creative-workflow"
+  ]
+}
