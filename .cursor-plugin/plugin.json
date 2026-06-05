@@ -1,0 +1,25 @@
+{
+  "$schema": "https://cursor.com/schemas/cursor-plugin/plugin.json",
+  "name": "seaart",
+  "displayName": "SeaArt",
+  "version": "0.1.0",
+  "description": "Prompt generation, GPT Image workflow assistance, preflight advice, and storyboard planning for SeaArt creative workflows.",
+  "author": {
+    "name": "SeaArt",
+    "email": "support@seaart.ai"
+  },
+  "publisher": "SeaArt",
+  "homepage": "https://www.seaart.ai",
+  "repository": "https://github.com/seaartpublic/skills",
+  "license": "MIT",
+  "category": "ai-content",
+  "keywords": [
+    "seaart",
+    "prompt",
+    "image-generation",
+    "video-prompt",
+    "storyboard",
+    "gpt-image",
+    "ai-content"
+  ]
+}
