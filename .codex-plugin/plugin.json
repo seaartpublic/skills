@@ -1,0 +1,42 @@
+{
+  "name": "seaart",
+  "version": "0.1.0",
+  "description": "SeaArt skills for prompt generation, GPT Image workflows, preflight creative advice, and storyboard planning.",
+  "author": {
+    "name": "SeaArt",
+    "email": "support@seaart.ai",
+    "url": "https://www.seaart.ai"
+  },
+  "homepage": "https://www.seaart.ai",
+  "repository": "https://github.com/seaartpublic/skills",
+  "license": "MIT",
+  "keywords": [
+    "seaart",
+    "prompt",
+    "image-generation",
+    "video-prompt",
+    "storyboard",
+    "gpt-image",
+    "creative-workflow"
+  ],
+  "skills": "./",
+  "interface": {
+    "displayName": "SeaArt",
+    "shortDescription": "Plan, improve, and prepare creative generation prompts",
+    "longDescription": "SeaArt skills help agents prepare high-quality creative prompts, GPT Image instructions, prompt preflight advice, and storyboard-ready shot plans. The skills are text-first and do not install dependencies, store secrets, or require a SeaArt CLI.",
+    "developerName": "SeaArt",
+    "category": "Design",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://www.seaart.ai",
+    "defaultPrompt": [
+      "Improve this product image prompt for SeaArt",
+      "Prepare a GPT Image edit prompt for this reference",
+      "Give preflight advice before I generate this image",
+      "Turn this ad concept into a storyboard prompt table"
+    ],
+    "brandColor": "#111827"
+  }
+}
